@@ -30,6 +30,13 @@ abstract class BaseController extends Controller
     // protected $session;
 
     /**
+     * Helpers loaded for every controller.
+     *
+     * @var list<string>
+     */
+    protected $helpers = ['url'];
+
+    /**
      * @param CLIRequest|IncomingRequest $request
      *
      * @return void
