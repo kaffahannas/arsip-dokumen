@@ -32,4 +32,16 @@ class ArchiveModel extends Model
         'file_size'     => 'required|is_natural',
         'uploaded_by'   => 'required|is_natural_no_zero|is_not_unique[users.id]',
     ];
+
+    /**
+     * Returns paginated archives with their category name.
+     */
+    public function getWithCategoryPaginated(int $perPage = 10): array
+    {
+        return $this->select('archives.*, categories.name AS category_name')
+            ->join('categories', 'categories.id = archives.category_id')
+            ->orderBy('archives.created_at', 'DESC')
+            ->orderBy('archives.id', 'DESC')
+            ->paginate($perPage);
+    }
 }

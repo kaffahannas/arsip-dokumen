@@ -14,6 +14,11 @@ $routes->group('', ['filter' => 'auth'], static function ($routes) {
     $routes->post('logout', 'Auth::logout');
 
     $routes->get('archives', 'Archives::index');
+    $routes->get('archives/create', 'Archives::create');
+    $routes->post('archives', 'Archives::store');
+    $routes->get('archives/edit/(:num)', 'Archives::edit/$1');
+    $routes->post('archives/update/(:num)', 'Archives::update/$1');
+    $routes->post('archives/delete/(:num)', 'Archives::delete/$1');
 
     $routes->get('categories', 'Categories::index');
     $routes->get('categories/create', 'Categories::create');
