@@ -58,7 +58,7 @@ Vagrantfile
 !/writable/session/index.html
 
 /writable/uploads/*
-!/writable/uploads/index.html
+!/writable/uploads/.gitkeep
 
 /writable/debugbar/*
 !/writable/debugbar/index.html
