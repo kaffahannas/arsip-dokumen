@@ -1,20 +1,11 @@
-<?php
-$formatSize = static function ($bytes): string {
-    $bytes = (int) $bytes;
-
-    if ($bytes >= 1048576) {
-        return number_format($bytes / 1048576, 1) . ' MB';
-    }
-
-    return number_format($bytes / 1024, 1) . ' KB';
-};
-?>
 <?= $this->extend('layouts/main') ?>
 
 <?= $this->section('content') ?>
 <div class="d-flex flex-column flex-sm-row justify-content-between align-items-sm-center gap-2 mb-3">
     <h1 class="h3 mb-0">Arsip Dokumen</h1>
-    <a href="<?= base_url('archives/create') ?>" class="btn btn-primary">Tambah Arsip</a>
+    <a href="<?= base_url('archives/create') ?>" class="btn btn-primary">
+        <i class="bi bi-plus-lg me-1" aria-hidden="true"></i>Tambah Arsip
+    </a>
 </div>
 
 <div class="card shadow-sm">
@@ -34,6 +25,7 @@ $formatSize = static function ($bytes): string {
                 <?php if ($archives === []): ?>
                     <tr>
                         <td colspan="6" class="text-center py-5">
+                            <i class="bi bi-inbox display-6 text-muted d-block mb-2" aria-hidden="true"></i>
                             <p class="mb-1 fw-semibold">Belum ada arsip.</p>
                             <p class="text-muted mb-0">Tambahkan arsip pertama dengan mengunggah dokumen PDF atau gambar.</p>
                         </td>
@@ -41,25 +33,44 @@ $formatSize = static function ($bytes): string {
                 <?php else: ?>
                     <?php foreach ($archives as $archive): ?>
                         <tr>
-                            <td class="fw-semibold"><?= esc($archive['title']) ?></td>
+                            <td class="fw-semibold text-break"><?= esc($archive['title']) ?></td>
                             <td>
-                                <span class="badge text-bg-secondary"><?= esc($archive['category_name']) ?></span>
+                                <span class="badge text-bg-secondary">
+                                    <i class="bi bi-tag me-1" aria-hidden="true"></i><?= esc($archive['category_name']) ?>
+                                </span>
                             </td>
                             <td class="text-break"><?= esc($archive['original_name']) ?></td>
-                            <td class="text-nowrap"><?= esc($formatSize($archive['file_size'])) ?></td>
+                            <td class="text-nowrap"><?= esc(format_file_size($archive['file_size'])) ?></td>
                             <td class="text-nowrap">
-                                <?= esc(date('d/m/Y H:i', strtotime($archive['created_at']))) ?>
+                                <?= esc(format_datetime($archive['created_at'])) ?>
                             </td>
                             <td class="text-end text-nowrap">
+                                <a href="<?= base_url('archives/' . $archive['id']) ?>"
+                                   class="btn btn-sm btn-outline-primary"
+                                   title="Detail"
+                                   aria-label="Detail arsip">
+                                    <i class="bi bi-eye" aria-hidden="true"></i>
+                                    <span class="d-none d-sm-inline ms-1">Detail</span>
+                                </a>
+
                                 <a href="<?= base_url('archives/edit/' . $archive['id']) ?>"
-                                   class="btn btn-sm btn-outline-secondary">Edit</a>
+                                   class="btn btn-sm btn-outline-secondary"
+                                   title="Edit"
+                                   aria-label="Edit arsip">
+                                    <i class="bi bi-pencil-square" aria-hidden="true"></i>
+                                    <span class="d-none d-sm-inline ms-1">Edit</span>
+                                </a>
 
                                 <form action="<?= base_url('archives/delete/' . $archive['id']) ?>"
                                       method="post"
                                       class="d-inline"
                                       onsubmit="return confirm('Yakin ingin menghapus arsip ini? File dokumen juga akan dihapus.');">
                                     <?= csrf_field() ?>
-                                    <button type="submit" class="btn btn-sm btn-outline-danger">Hapus</button>
+                                    <button type="submit" class="btn btn-sm btn-outline-danger"
+                                            title="Hapus" aria-label="Hapus arsip">
+                                        <i class="bi bi-trash" aria-hidden="true"></i>
+                                        <span class="d-none d-sm-inline ms-1">Hapus</span>
+                                    </button>
                                 </form>
                             </td>
                         </tr>
@@ -72,7 +83,7 @@ $formatSize = static function ($bytes): string {
 
 <?php if ($pager->getPageCount() > 1): ?>
     <div class="mt-3">
-        <?= $pager->links() ?>
+        <?= $pager->links('default', 'bootstrap') ?>
     </div>
 <?php endif; ?>
 <?= $this->endSection() ?>

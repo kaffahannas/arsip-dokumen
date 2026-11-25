@@ -5,26 +5,30 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title><?= esc($title ?? 'Sistem Arsip Dokumen') ?> - Sistem Arsip Dokumen</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet">
 </head>
 <body class="bg-light">
-    <main class="container py-5">
+    <main class="container py-4 py-sm-5">
         <div class="row justify-content-center">
             <div class="col-12 col-sm-10 col-md-7 col-lg-5">
                 <div class="text-center mb-4">
+                    <div class="text-primary mb-2">
+                        <i class="bi bi-archive display-5" aria-hidden="true"></i>
+                    </div>
                     <h1 class="h3 mb-1">Sistem Arsip Dokumen</h1>
                     <p class="text-muted mb-0">Masuk untuk mengelola arsip Anda</p>
                 </div>
 
                 <div class="card shadow-sm">
-                    <div class="card-body p-4">
+                    <div class="card-body p-3 p-sm-4">
                         <?php if (session()->getFlashdata('error')): ?>
-                            <div class="alert alert-danger" role="alert">
+                            <div class="alert alert-danger text-break" role="alert">
                                 <?= esc(session()->getFlashdata('error')) ?>
                             </div>
                         <?php endif; ?>
 
                         <?php if (session()->getFlashdata('success')): ?>
-                            <div class="alert alert-success" role="alert">
+                            <div class="alert alert-success text-break" role="alert">
                                 <?= esc(session()->getFlashdata('success')) ?>
                             </div>
                         <?php endif; ?>
@@ -62,7 +66,9 @@
                                 <?php endif; ?>
                             </div>
 
-                            <button type="submit" class="btn btn-primary w-100">Login</button>
+                            <button type="submit" class="btn btn-primary w-100">
+                                <i class="bi bi-box-arrow-in-right me-1" aria-hidden="true"></i>Login
+                            </button>
                         </form>
                     </div>
                 </div>

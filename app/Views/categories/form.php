@@ -10,13 +10,15 @@ $errors = session()->getFlashdata('errors') ?? [];
 <?= $this->section('content') ?>
 <div class="row justify-content-center">
     <div class="col-12 col-lg-8 col-xl-7">
-        <div class="d-flex justify-content-between align-items-center mb-3">
+        <div class="d-flex justify-content-between align-items-center gap-2 mb-3">
             <h1 class="h3 mb-0"><?= esc($title) ?></h1>
-            <a href="<?= base_url('categories') ?>" class="btn btn-sm btn-outline-secondary">Kembali</a>
+            <a href="<?= base_url('categories') ?>" class="btn btn-sm btn-outline-secondary text-nowrap">
+                <i class="bi bi-arrow-left me-1" aria-hidden="true"></i>Kembali
+            </a>
         </div>
 
         <div class="card shadow-sm">
-            <div class="card-body p-4">
+            <div class="card-body p-3 p-md-4">
                 <form action="<?= esc($action) ?>" method="post" novalidate>
                     <?= csrf_field() ?>
 
@@ -46,11 +48,13 @@ $errors = session()->getFlashdata('errors') ?? [];
                         <?php endif; ?>
                     </div>
 
-                    <div class="d-flex gap-2">
+                    <div class="d-grid gap-2 d-sm-flex">
                         <button type="submit" class="btn btn-primary">
-                            <?= $isEdit ? 'Simpan Perubahan' : 'Simpan' ?>
+                            <i class="bi bi-check-lg me-1" aria-hidden="true"></i><?= $isEdit ? 'Simpan Perubahan' : 'Simpan' ?>
                         </button>
-                        <a href="<?= base_url('categories') ?>" class="btn btn-outline-secondary">Batal</a>
+                        <a href="<?= base_url('categories') ?>" class="btn btn-outline-secondary">
+                            <i class="bi bi-x-lg me-1" aria-hidden="true"></i>Batal
+                        </a>
                     </div>
                 </form>
             </div>

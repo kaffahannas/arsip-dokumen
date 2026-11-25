@@ -19,6 +19,9 @@ $routes->group('', ['filter' => 'auth'], static function ($routes) {
     $routes->get('archives/edit/(:num)', 'Archives::edit/$1');
     $routes->post('archives/update/(:num)', 'Archives::update/$1');
     $routes->post('archives/delete/(:num)', 'Archives::delete/$1');
+    $routes->get('archives/file/(:num)', 'Archives::file/$1');
+    $routes->get('archives/download/(:num)', 'Archives::download/$1');
+    $routes->get('archives/(:num)', 'Archives::show/$1');
 
     $routes->get('categories', 'Categories::index');
     $routes->get('categories/create', 'Categories::create');

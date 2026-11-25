@@ -44,4 +44,15 @@ class ArchiveModel extends Model
             ->orderBy('archives.id', 'DESC')
             ->paginate($perPage);
     }
+
+    /**
+     * Returns a single archive with its category name.
+     */
+    public function getWithCategory(int $id): ?array
+    {
+        return $this->select('archives.*, categories.name AS category_name')
+            ->join('categories', 'categories.id = archives.category_id')
+            ->where('archives.id', $id)
+            ->first();
+    }
 }

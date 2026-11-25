@@ -34,7 +34,7 @@ abstract class BaseController extends Controller
      *
      * @var list<string>
      */
-    protected $helpers = ['url'];
+    protected $helpers = ['url', 'format'];
 
     /**
      * @param CLIRequest|IncomingRequest $request

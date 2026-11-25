@@ -6,6 +6,7 @@ use App\Models\ArchiveModel;
 use App\Models\CategoryModel;
 use CodeIgniter\Exceptions\PageNotFoundException;
 use CodeIgniter\HTTP\RedirectResponse;
+use CodeIgniter\HTTP\ResponseInterface;
 use CodeIgniter\HTTP\Files\UploadedFile;
 use Throwable;
 
@@ -192,6 +193,52 @@ class Archives extends BaseController
             ->with('success', 'Arsip berhasil dihapus.');
     }
 
+    public function show(int $id): string
+    {
+        $archive = model(ArchiveModel::class)->getWithCategory($id);
+
+        if ($archive === null) {
+            throw PageNotFoundException::forPageNotFound('Arsip tidak ditemukan.');
+        }
+
+        return view('archives/show', [
+            'title'   => 'Detail Arsip',
+            'archive' => $archive,
+        ]);
+    }
+
+    public function file(int $id): ResponseInterface
+    {
+        $archive  = $this->findArchive($id);
+        $filePath = $this->filePath($archive['stored_name']);
+
+        if (! is_file($filePath)) {
+            throw PageNotFoundException::forPageNotFound('File arsip tidak ditemukan.');
+        }
+
+        return $this->response
+            ->setHeader('Content-Type', $archive['mime_type'])
+            ->setHeader('Content-Disposition', $this->contentDisposition('inline', $archive['original_name']))
+            ->setHeader('Content-Length', (string) filesize($filePath))
+            ->setBody((string) file_get_contents($filePath));
+    }
+
+    public function download(int $id): ResponseInterface
+    {
+        $archive  = $this->findArchive($id);
+        $filePath = $this->filePath($archive['stored_name']);
+
+        if (! is_file($filePath)) {
+            throw PageNotFoundException::forPageNotFound('File arsip tidak ditemukan.');
+        }
+
+        return $this->response
+            ->setHeader('Content-Type', $archive['mime_type'])
+            ->setHeader('Content-Disposition', $this->contentDisposition('attachment', $archive['original_name']))
+            ->setHeader('Content-Length', (string) filesize($filePath))
+            ->setBody((string) file_get_contents($filePath));
+    }
+
     private function findArchive(int $id): array
     {
         $archive = model(ArchiveModel::class)->find($id);
@@ -265,9 +312,23 @@ class Archives extends BaseController
         return WRITEPATH . 'uploads';
     }
 
+    private function filePath(string $storedName): string
+    {
+        return $this->uploadPath() . DIRECTORY_SEPARATOR . basename($storedName);
+    }
+
+    private function contentDisposition(string $type, string $filename): string
+    {
+        $filename = basename($filename);
+        $fallback = preg_replace('/[^\x20-\x7E]/', '_', $filename) ?? 'file';
+        $fallback = str_replace(['"', '\\'], '', $fallback);
+
+        return sprintf('%s; filename="%s"; filename*=UTF-8\'\'%s', $type, $fallback, rawurlencode($filename));
+    }
+
     private function removeFile(string $storedName): void
     {
-        $path = $this->uploadPath() . DIRECTORY_SEPARATOR . $storedName;
+        $path = $this->filePath($storedName);
 
         if (is_file($path)) {
             @unlink($path);
