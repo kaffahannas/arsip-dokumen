@@ -46,7 +46,7 @@ composer --version
 1. **Clone repository**
 
    ```bash
-   git clone https://github.com/username/arsip-dokumen.git
+   https://github.com/kaffahannas/arsip-dokumen.git
    cd arsip-dokumen
    ```
 
