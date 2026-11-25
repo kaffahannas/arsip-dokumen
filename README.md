@@ -1,69 +1,198 @@
-# CodeIgniter 4 Application Starter
+# Sistem Arsip Dokumen
 
-## What is CodeIgniter?
+Aplikasi web sederhana untuk mengarsipkan dokumen digital. Admin dapat login, mengelola kategori, lalu mengunggah, melihat, mengunduh, mengubah, dan menghapus arsip dokumen berformat **PDF, JPG, atau PNG**.
 
-CodeIgniter is a PHP full-stack web framework that is light, fast, flexible and secure.
-More information can be found at the [official site](https://codeigniter.com).
+Aplikasi dibangun dengan **CodeIgniter 4**, menyimpan file upload di luar folder `public`, dan menyediakan migration, seeder, serta dump SQL agar mudah dijalankan dari database kosong.
 
-This repository holds a composer-installable app starter.
-It has been built from the
-[development repository](https://github.com/codeigniter4/CodeIgniter4).
+## Fitur
 
-More information about the plans for version 4 can be found in [CodeIgniter 4](https://forum.codeigniter.com/forumdisplay.php?fid=28) on the forums.
+- Login dan logout dengan proteksi session.
+- Semua halaman selain login hanya bisa diakses setelah login.
+- CRUD kategori (tambah, lihat daftar, ubah, hapus).
+- CRUD arsip dokumen dengan upload file.
+- Lihat file arsip langsung di browser dan unduh file.
+- Validasi ekstensi, MIME type, dan ukuran file maksimal **5 MB**.
+- Kategori yang masih memiliki arsip tidak dapat dihapus.
+- Tampilan responsif dengan Bootstrap 5.
+- Flash message, validasi form, konfirmasi hapus, dan empty state.
+- CSRF protection pada semua form POST dan escaping output dengan `esc()`.
 
-You can read the [user guide](https://codeigniter.com/user_guide/)
-corresponding to the latest version of the framework.
+## Tech Stack
 
-## Installation & updates
+- **PHP** 8.2 atau lebih baru
+- **CodeIgniter** 4.7
+- **MySQL / MariaDB**
+- **Bootstrap** 5.3.3 dan **Bootstrap Icons** 1.11.3 (CDN)
+- **Composer** untuk manajemen dependency
 
-`composer create-project codeigniter4/appstarter` then `composer update` whenever
-there is a new release of the framework.
+## Prasyarat
 
-When updating, check the release notes to see if there are any changes you might need to apply
-to your `app` folder. The affected files can be copied or merged from
-`vendor/codeigniter4/framework/app`.
+Pastikan sudah terpasang:
 
-## Setup
+- PHP 8.2+ dengan ekstensi `intl`, `mbstring`, dan `mysqli`
+- Composer
+- MySQL atau MariaDB
+- Git
 
-Copy `env` to `.env` and tailor for your app, specifically the baseURL
-and any database settings.
+Cek versi PHP dan Composer:
 
-## Important Change with index.php
+```bash
+php -v
+composer --version
+```
 
-`index.php` is no longer in the root of the project! It has been moved inside the *public* folder,
-for better security and separation of components.
+## Instalasi
 
-This means that you should configure your web server to "point" to your project's *public* folder, and
-not to the project root. A better practice would be to configure a virtual host to point there. A poor practice would be to point your web server to the project root and expect to enter *public/...*, as the rest of your logic and the
-framework are exposed.
+1. **Clone repository**
 
-**Please** read the user guide for a better explanation of how CI4 works!
+   ```bash
+   git clone https://github.com/username/arsip-dokumen.git
+   cd arsip-dokumen
+   ```
 
-## Repository Management
+   Sesuaikan URL di atas dengan URL repository Anda.
 
-We use GitHub issues, in our main repository, to track **BUGS** and to track approved **DEVELOPMENT** work packages.
-We use our [forum](http://forum.codeigniter.com) to provide SUPPORT and to discuss
-FEATURE REQUESTS.
+2. **Install dependency**
 
-This repository is a "distribution" one, built by our release preparation script.
-Problems with it can be raised on our forum, or as issues in the main repository.
+   ```bash
+   composer install
+   ```
 
-## Server Requirements
+3. **Salin file environment**
 
-PHP version 8.2 or higher is required, with the following extensions installed:
+   Windows (PowerShell):
 
-- [intl](http://php.net/manual/en/intl.requirements.php)
-- [mbstring](http://php.net/manual/en/mbstring.installation.php)
+   ```powershell
+   Copy-Item env.example .env
+   ```
 
-> [!WARNING]
-> - The end of life date for PHP 7.4 was November 28, 2022.
-> - The end of life date for PHP 8.0 was November 26, 2023.
-> - The end of life date for PHP 8.1 was December 31, 2025.
-> - If you are still using below PHP 8.2, you should upgrade immediately.
-> - The end of life date for PHP 8.2 will be December 31, 2026.
+   Linux/macOS:
 
-Additionally, make sure that the following extensions are enabled in your PHP:
+   ```bash
+   cp env.example .env
+   ```
 
-- json (enabled by default - don't turn it off)
-- [mysqlnd](http://php.net/manual/en/mysqlnd.install.php) if you plan to use MySQL
-- [libcurl](http://php.net/manual/en/curl.requirements.php) if you plan to use the HTTP\CURLRequest library
+   Buka `.env`, lalu sesuaikan `app.baseURL` dan koneksi database:
+
+   ```ini
+   CI_ENVIRONMENT = development
+
+   app.baseURL = 'http://localhost:8080/'
+
+   database.default.hostname = localhost
+   database.default.database = arsip_dokumen
+   database.default.username = root
+   database.default.password =
+   database.default.DBDriver = MySQLi
+   database.default.DBPrefix =
+   database.default.port = 3306
+   ```
+
+4. **Buat database**
+
+   ```sql
+   CREATE DATABASE arsip_dokumen
+       CHARACTER SET utf8mb4
+       COLLATE utf8mb4_general_ci;
+   ```
+
+5. **Jalankan migration**
+
+   ```bash
+   php spark migrate
+   ```
+
+6. **Isi data awal dengan seeder**
+
+   ```bash
+   php spark db:seed DatabaseSeeder
+   ```
+
+   Seeder akan membuat akun admin dan tiga kategori contoh.
+
+7. **Jalankan aplikasi**
+
+   ```bash
+   php spark serve
+   ```
+
+   Buka `http://localhost:8080` di browser.
+
+### Alternatif: Import dump SQL
+
+Jika tidak ingin menjalankan migration dan seeder, Anda dapat mengimpor dump SQL yang sudah disediakan:
+
+```bash
+mysql -u root -p arsip_dokumen < database/arsip_dokumen.sql
+```
+
+Atau impor file `database/arsip_dokumen.sql` melalui phpMyAdmin.
+
+## Akun Uji
+
+| Email | Password |
+| --- | --- |
+| `admin@example.com` | `Admin12345` |
+
+Akun ini dibuat oleh `UserSeeder`. Tidak ada fitur registrasi; pengguna baru hanya dapat ditambahkan melalui seeder.
+
+## Struktur Folder
+
+```text
+arsip-dokumen/
+├── app/
+│   ├── Config/              # Konfigurasi aplikasi, routes, filters, database
+│   ├── Controllers/         # Auth, Archives, Categories
+│   ├── Database/
+│   │   ├── Migrations/      # Migration tabel users, categories, archives
+│   │   └── Seeds/           # UserSeeder, CategorySeeder, DatabaseSeeder
+│   ├── Filters/             # AuthFilter dan GuestFilter
+│   ├── Models/              # UserModel, CategoryModel, ArchiveModel
+│   └── Views/               # Layout, autentikasi, arsip, kategori, error
+├── database/
+│   └── arsip_dokumen.sql    # Dump SQL database
+├── public/                  # Document root web server (index.php)
+├── tests/                   # Pengujian bawaan CodeIgniter
+├── writable/
+│   └── uploads/             # Penyimpanan file arsip (di luar public)
+├── .env                     # Konfigurasi lokal (tidak di-commit)
+├── env.example              # Contoh konfigurasi environment
+├── composer.json
+├── spark
+└── README.md
+```
+
+## Catatan Konfigurasi Upload
+
+Aplikasi membatasi ukuran file maksimal **5 MB**. Agar upload berjalan lancar, pastikan konfigurasi PHP di `php.ini` lebih besar dari batas tersebut:
+
+```ini
+upload_max_filesize = 8M
+post_max_size = 10M
+```
+
+`post_max_size` harus lebih besar atau sama dengan `upload_max_filesize`. Setelah mengubah `php.ini`, restart web server (Apache/Nginx) atau PHP-FPM.
+
+Cek nilai yang sedang aktif:
+
+```bash
+php -i | grep -E "upload_max_filesize|post_max_size"
+```
+
+Di Windows (PowerShell):
+
+```powershell
+php -i | Select-String "upload_max_filesize|post_max_size"
+```
+
+File upload disimpan di `writable/uploads/` dengan nama acak. File tidak dapat diakses langsung lewat URL public; akses hanya melalui route `archives/file` dan `archives/download` yang dilindungi login.
+
+## Catatan untuk Hosting
+
+- **Document root web server harus mengarah ke folder `public/`**, bukan ke root project. Jangan menaruh seluruh project di dalam `public_html` tanpa mengarahkan document root ke `public/`, karena file konfigurasi dan source code bisa terekspos.
+- Pastikan folder `writable/` dapat ditulis oleh user web server.
+- Set `CI_ENVIRONMENT = production` dan `app.baseURL` sesuai domain (gunakan HTTPS) saat production.
+- Jangan commit file `.env`; gunakan environment variable atau konfigurasi server untuk kredensial.
+- Untuk Apache, file `public/.htaccess` sudah disediakan. Untuk Nginx, arahkan `root` ke folder `public` dan teruskan request ke `index.php`.
+- Proteksi folder `writable/` di Apache memakai `writable/.htaccess`. Pada Nginx, tambahkan aturan `location` untuk menolak akses langsung ke folder tersebut.
+- Dump SQL tersedia di `database/arsip_dokumen.sql` untuk keperluan backup atau import.
