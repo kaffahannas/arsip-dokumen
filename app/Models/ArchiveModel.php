@@ -28,7 +28,7 @@ class ArchiveModel extends Model
         'description'   => 'permit_empty',
         'original_name' => 'required|max_length[255]',
         'stored_name'   => 'required|max_length[255]',
-        'mime_type'     => 'required|max_length[100]',
+        'mime_type'     => 'required|max_length[100]|in_list[application/pdf,image/jpeg,image/png]',
         'file_size'     => 'required|is_natural',
         'uploaded_by'   => 'required|is_natural_no_zero|is_not_unique[users.id]',
     ];

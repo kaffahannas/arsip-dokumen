@@ -54,6 +54,7 @@ class Archives extends BaseController
         }
 
         $storedName = $file->getRandomName();
+        $data       = array_merge($this->metadata(), $this->fileData($file, $storedName));
 
         try {
             $file->move($this->uploadPath(), $storedName);
@@ -64,8 +65,6 @@ class Archives extends BaseController
                 ->withInput()
                 ->with('error', 'File gagal diunggah. Silakan coba lagi.');
         }
-
-        $data = array_merge($this->metadata(), $this->fileData($file, $storedName));
 
         try {
             if (! $archiveModel->insert($data)) {
@@ -127,6 +126,7 @@ class Archives extends BaseController
             }
 
             $newStored = $file->getRandomName();
+            $data      = array_merge($data, $this->fileData($file, $newStored));
 
             try {
                 $file->move($this->uploadPath(), $newStored);
@@ -137,8 +137,6 @@ class Archives extends BaseController
                     ->withInput()
                     ->with('error', 'File gagal diunggah. Silakan coba lagi.');
             }
-
-            $data = array_merge($data, $this->fileData($file, $newStored));
         }
 
         try {
@@ -218,6 +216,7 @@ class Archives extends BaseController
 
         return $this->response
             ->setHeader('Content-Type', $archive['mime_type'])
+            ->setHeader('X-Content-Type-Options', 'nosniff')
             ->setHeader('Content-Disposition', $this->contentDisposition('inline', $archive['original_name']))
             ->setHeader('Content-Length', (string) filesize($filePath))
             ->setBody((string) file_get_contents($filePath));
@@ -234,6 +233,7 @@ class Archives extends BaseController
 
         return $this->response
             ->setHeader('Content-Type', $archive['mime_type'])
+            ->setHeader('X-Content-Type-Options', 'nosniff')
             ->setHeader('Content-Disposition', $this->contentDisposition('attachment', $archive['original_name']))
             ->setHeader('Content-Length', (string) filesize($filePath))
             ->setBody((string) file_get_contents($filePath));
@@ -301,7 +301,7 @@ class Archives extends BaseController
         return [
             'original_name' => $file->getClientName(),
             'stored_name'   => $storedName,
-            'mime_type'     => $file->getClientMimeType(),
+            'mime_type'     => $file->getMimeType(),
             'file_size'     => $file->getSize(),
             'uploaded_by'   => (int) session('user_id'),
         ];
